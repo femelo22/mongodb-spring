@@ -3,23 +3,33 @@ package com.lfmelo.controllers;
 
 import com.lfmelo.entities.Student;
 import com.lfmelo.repositories.StudentRepository;
+import com.lfmelo.services.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/students")
 public class StudentController {
 
     @Autowired
-    StudentRepository repository;
+    StudentService service;
 
     @PostMapping
-    public void addStudent(@RequestBody Student student) {
-        System.out.println("Passou aqui: " + student);
-        Student save = repository.save(student);
-        System.out.println(save);
+    public ResponseEntity<Student> addStudent(@RequestBody Student student) {
+        return ResponseEntity.ok(service.registerStudent(student));
     }
+
+    @GetMapping("/{email}")
+    public ResponseEntity<Student> findStudentByEmail(@PathVariable String email) {
+        return ResponseEntity.ok(service.getStudentByEmail(email));
+    }
+
+    @GetMapping
+    public ResponseEntity<List<Student>> findAllStudents() {
+        return ResponseEntity.ok(service.findAll());
+    }
+
 }
